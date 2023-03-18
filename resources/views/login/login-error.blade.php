@@ -1,17 +1,22 @@
-<!doctype html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Login</title>
-</head>
-<body>
+@extends('layouts.main')
+
+@section('title')Ошибка@endsection
+
+@section('head')
+
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/message-page.css') }}">
+
+@endsection
 
 
-Неправильный логин или пароль
+@section('body')
+
+    <div class="content">
+
+        <img class="cat" src="{{ asset('img/432434.png') }}">
+        <span class="text">Неверный логин или пароль</span>
+
+    </div>
 
 
-</body>
-</html>
+@endsection

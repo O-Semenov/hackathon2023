@@ -1,0 +1,56 @@
+
+:root{
+    --footer-height: 400px;
+    --footer-item-width: calc(100vw / 5);
+}
+
+body{
+    margin: 0;
+    padding: 0;
+}
+
+.head{
+    width: 100%;
+    height: 100px;
+    background: #fff;
+    position: fixed;
+    border-bottom: 1px solid #1a202c55;
+}
+
+
+.footer{
+    width: 100%;
+    overflow: hidden;
+    height: var(--footer-height);
+
+
+}
+
+.footer-content{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #FF5108;
+    margin: 0;
+    padding: 0;
+}
+
+.footer-item{
+    width: var(--footer-item-width);
+    height: var(--footer-height);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 12pt;
+}
+
+.wave{
+    width: 100vw;
+    margin: 0;
+}
+
+.block{
+    height: 100px;
+}
