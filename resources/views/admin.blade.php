@@ -11,7 +11,7 @@
 
 <h2>Создать нового пользователя</h2>
 
-<form method="POST" autocomplete="off" action="/register">
+<form method="POST" autocomplete="off" action="/register" enctype="multipart/form-data">
     @csrf
     <input name="surname" placeholder="Фамилия">
     <br><br>
@@ -30,6 +30,7 @@
         @endforeach
     </select>
     <br><br>
+    {{Form::file('image')}}
     <button type="submit" class="btn btn-dark btn-block">
         Создать пользователя
     </button>

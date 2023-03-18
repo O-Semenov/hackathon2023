@@ -19,6 +19,7 @@ $auth = \Illuminate\Support\Facades\Auth::check();
 <body>
 @if($auth)
     <h1>{{ $user->surname }} {{ mb_substr($user->name, 0, 1) }}. {{ mb_substr($user->patronymic, 0, 1) }}.</h1>
+    <img src="{{asset('storage'). '/' . $user->img}}" alt="image.png">
     @if ($user->role == 0)
         <span>Администратор</span>
     @elseif ($user->role == 1)

@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
+    public const PUBLIC_SIZE = 7;
+
     public function login(Request $request){
         $formField = $request->only(['email', 'password']);
 
@@ -26,6 +28,17 @@ class LoginController extends Controller
         if (Auth::user()->role != 0 && Auth::user()->role != 1){
             return redirect(route('index'));
         }
+        $path = null;
+        if($request->hasFile('image')){
+            $filenameWithExt = $request->file('image')->getClientOriginalName();
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            $extention = $request->file('image')->getClientOriginalExtension();
+            $fileNameToStore = "avatars/".$filename."_".time().".".$extention;
+            $path = mb_substr(
+                $request->file('image')->storeAs('public', $fileNameToStore),
+                self::PUBLIC_SIZE
+            );
+        }
 
         $validateFields = $request->validate([
             'surname' => 'required',
@@ -35,6 +48,7 @@ class LoginController extends Controller
             'password' => 'required',
             'department_id' => 'required'
         ]);
+        $validateFields['img'] = $path;
 
         // Корректность отдела
         $departmentCheck = Department::where('id', $validateFields['department_id'])->first();
