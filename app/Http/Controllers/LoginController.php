@@ -13,7 +13,7 @@ class LoginController extends Controller
         if (Auth::attempt($formField)){
             return redirect()->to(route('index'));
         }else{
-            return redirect()->to(route('test'));
+            return redirect()->to(route('login-error'));
         }
     }
 }
