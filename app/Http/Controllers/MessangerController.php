@@ -15,6 +15,20 @@ class MessangerController extends Controller
             return redirect(route('login'));
         }
 
+        $chats = DB::table('chats_users')->where('user_id', Auth::user()->id)->get();
+
+        foreach ($chats as $chat){
+            $user = DB::table('chats_users')->where([
+                ['chat_id', '=', $chat->id],
+                ['user_id', '<>', Auth::user()->id]
+            ])->first();
+            echo $user->user_id;
+        }
+        die();
+
+        dd($chats);
+
+
         $users = User::all();
 
         return view('messanger/messanger', [
