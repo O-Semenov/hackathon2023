@@ -32,9 +32,10 @@ $auth = \Illuminate\Support\Facades\Auth::check();
     <br>
     <br>
     @if ($user->role == 0 || $user->role == 1)
-        <a class="dropdown-item" href="/admin">Админка</a>
+        <a href="/admin">Админка</a>
     @endif
-    <a class="dropdown-item" href="/logout">Выход</a>
+    <a href="/messanger">Сообщения</a>
+    <a href="/logout">Выход</a>
 @endif
 </body>
 </html>
