@@ -30,6 +30,7 @@ class CreateUsersTable extends Migration
             $table->foreignIdFor(Department::class);
             $table->rememberToken();
             $table->timestamps();
+            $table->string('img')->nullable();
         });
     }
 
