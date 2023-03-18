@@ -17,6 +17,7 @@ class CreateChatsUsersTable extends Migration
             $table->id();
             $table->integer('chat_id');
             $table->integer('user_id');
+            $table->timestamp('last_time')->default(DB::raw('CURRENT_TIMESTAMP'));
         });
     }
 

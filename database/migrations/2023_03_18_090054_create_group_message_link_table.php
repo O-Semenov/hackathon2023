@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateGroupMessageLinkTable extends Migration
@@ -13,12 +14,12 @@ class CreateGroupMessageLinkTable extends Migration
      */
     public function up()
     {
-        Schema::create('group_message_link', function (Blueprint $table) {
+        Schema::create('messages', function (Blueprint $table) {
             $table->id();
-            $table->timestamp('date');
+            $table->timestamp('date')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->integer('chat_id');
             $table->integer('user_id');
-            $table->integer('message_id');
+            $table->string('message');
         });
     }
 

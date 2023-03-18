@@ -10,39 +10,120 @@ use Illuminate\Support\Facades\DB;
 
 class MessangerController extends Controller
 {
+
+    /*---------------------- Functions ----------------------*/
+
+    public function createDialog($user_id){
+        $chats_self = DB::table('chats_users')->where('user_id', Auth::user()->id)->get();
+
+        foreach ($chats_self as $chat){
+            if ($user_id != Auth::user()->id){
+                $chats_self_i = DB::table('chats_users')->where([
+                    ['chat_id', '=', $chat->chat_id],
+                    ['user_id', '<>', Auth::user()->id]
+                ])->get();
+            }else{
+                $chats_self_i = DB::table('chats_users')->where([
+                    ['chat_id', '=', $chat->chat_id],
+                    ['user_id', '=', Auth::user()->id]
+                ])->get();
+            }
+
+
+            foreach ($chats_self_i as $chat_i){
+                if ($chat_i->user_id == $user_id){
+                    return $chat_i->chat_id;
+                }
+            }
+        }
+
+        // Создание чата
+        $new_chat_id = DB::table('chats')->insertGetId([
+            'name' => '',
+            'type' => 0
+        ]);
+
+        DB::table('chats_users')->insert([
+            ['chat_id' => $new_chat_id, 'user_id' => Auth::user()->id],
+            ['chat_id' => $new_chat_id, 'user_id' => $user_id],
+        ]);
+
+        return $new_chat_id;
+    }
+
+    public function getUsers(){
+        return User::where([
+            ['id', '<>', Auth::user()->id]
+        ])->get();
+    }
+
+    public function sendMessage(Request $request, $chat_id){
+        $validateFields = $request->validate([
+            'message' => 'required',
+        ]);
+
+        DB::table('messages')->insert([
+            ['chat_id' => $chat_id, 'user_id' => Auth::user()->id, 'message' => $validateFields['message']],
+        ]);
+
+        //dd($validateFields);
+        return 'send message: ' . $chat_id . ' - ' . $validateFields['message'];
+    }
+
+    public function getNewChatMessages($chat_id){
+        $lastTime = DB::table('chats_users')->where([
+            ['chat_id', '=', $chat_id],
+            ['user_id', '=', Auth::user()->id]
+        ])->first()->last_time;
+
+        $newMessages = DB::table('messages')->where([
+            ['chat_id', '=', $chat_id],
+            ['date', '>', $lastTime]
+        ])->get();
+
+        if ($newMessages->count() > 0){
+            $lastTime = $newMessages[$newMessages->count() - 1]->date;
+
+            DB::table('chats_users')->where([
+                ['chat_id', '=', $chat_id],
+                ['user_id', '=', Auth::user()->id]
+            ])->update([
+                'last_time' => $lastTime
+            ]);
+        }
+
+        return $newMessages->toJson();
+    }
+
+
+    /*---------------------- View ----------------------*/
+
     public function index(Request $request){
         if (!Auth::check()){
             return redirect(route('login'));
         }
 
-        $chats = DB::table('chats_users')->where('user_id', Auth::user()->id)->get();
-
-        foreach ($chats as $chat){
-            $user = DB::table('chats_users')->where([
-                ['chat_id', '=', $chat->id],
-                ['user_id', '<>', Auth::user()->id]
-            ])->first();
-            echo $user->user_id;
-        }
-        die();
-
-        dd($chats);
-
-
-        $users = User::all();
-
         return view('messanger/messanger', [
-            'users' => $users
+            'users' => $this->getUsers(),
+            'chat' => false
         ]);
     }
 
 
-    public function userChat(Request $request, $user_id){
-        //dd($user_id);
+    public function userCreateChat(Request $request, $user_id){
+        $chat_id = $this->createDialog($user_id);
+        return redirect('/messanger/chat/' . $chat_id);
+    }
 
-        $departments = DB::table('chats')->where([
-            []
-        ])->get();
-        dd($departments);
+    public function userChat(Request $request, $chat_id){
+
+        $messages = DB::table('messages')->where('chat_id', $chat_id)->get();
+
+        return view('messanger/messanger', [
+            'users' => $this->getUsers(),
+            'chat' => true,
+            'chat_id' => $chat_id,
+            'messages' => $messages
+        ]);
     }
 }
