@@ -18,7 +18,7 @@ $auth = \Illuminate\Support\Facades\Auth::check();
 </head>
 <body>
 @if($auth)
-    <h1><?= $user->name ?></h1>
+    <h1>{{ $user->surname }} {{ mb_substr($user->name, 0, 1) }}. {{ mb_substr($user->patronymic, 0, 1) }}.</h1>
     @if ($user->role == 0)
         <span>Администратор</span>
     @elseif ($user->role == 1)
@@ -27,8 +27,13 @@ $auth = \Illuminate\Support\Facades\Auth::check();
         <span>Сотрудник</span>
     @endif
     <br>
+    Отдел: {{ $department->name }}
     <br>
     <br>
+    <br>
+    @if ($user->role == 0 || $user->role == 1)
+        <a class="dropdown-item" href="/admin">Админка</a>
+    @endif
     <a class="dropdown-item" href="/logout">Выход</a>
 @endif
 </body>
