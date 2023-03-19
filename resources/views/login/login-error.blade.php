@@ -13,8 +13,12 @@
 
     <div class="content">
 
-        <img class="cat" src="{{ asset('img/432434.png') }}">
-        <span class="text">Неверный логин или пароль</span>
+        <div class="card">
+            <img class="cat" src="{{ asset('img/432434.png') }}">
+            <span class="text">Неверный логин или пароль</span>
+            <br>
+            <a class="ref-main" href="/">Главная</a>
+        </div>
 
     </div>
 

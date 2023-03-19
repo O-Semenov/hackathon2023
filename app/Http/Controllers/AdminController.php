@@ -45,28 +45,38 @@ class AdminController extends Controller
             return redirect(route('index'));
         }
 
+        $user = User::where('id', '=', $user_id)->first();
+
+        $params = $request->all();
+
+
+        /*
         $validateFields = $request->validate([
             'surname' => 'required',
             'name' => 'required',
             'patronymic' => 'required',
             'email' => 'required|email',
             'department_id' => 'required',
-            'role' => 'required'
+            'role' => 'required',
+            //'img' => 'required',
         ]);
+        */
 
-        $user = User::find($user_id);
+
+
 
         if (Auth::user()->role > $user->role){
             return redirect(route('bad_role'));
         }
 
+
         $user->update([
-            'surname' => $validateFields['surname'],
-            'name' => $validateFields['name'],
-            'patronymic' => $validateFields['patronymic'],
-            'email' => $validateFields['email'],
-            'department_id' => $validateFields['department_id'],
-            'role' => $validateFields['role'],
+            'surname' => $params['surname'],
+            'name' => $params['name'],
+            'patronymic' => $params['patronymic'],
+            'email' => $params['email'],
+            'department_id' => $params['department_id'],
+            'role' => $params['role'],
         ]);
 
         return redirect(route('good_user_edit'));

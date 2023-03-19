@@ -119,10 +119,18 @@ class MessangerController extends Controller
 
         $messages = DB::table('messages')->where('chat_id', $chat_id)->get();
 
+        $user_id = DB::table('chats_users')->where([
+            ['chat_id', '=', $chat_id],
+            ['user_id', '<>', Auth::user()->id]
+        ])->first()->user_id;
+        $user_selected = User::where('id', $user_id)->first();
+
+
         return view('messanger/messanger', [
-            'users' => $this->getUsers(),
+            'users' => User::where('id', '<>', Auth::user()->id)->get(),
             'chat' => true,
             'chat_id' => $chat_id,
+            'user_selected' => $user_selected,
             'messages' => $messages
         ]);
     }

@@ -23,22 +23,21 @@
 
 
 <div class="footer">
-    <div class="wave-box">
-        <img class="wave" src="{{ asset('img/wave.png') }}">
-    </div>
     <div class="footer-content">
         <div class="footer-item">
             © 2023
         </div>
         <div class="footer-item">
-            +7 876 902-14-23
+            <a href="tel:84955405179">+7 876 902-14-23</a>
         </div>
         <div class="footer-item">
-            info@webpractic.ru
+            <a href="mailto:info@webpractik.ru">info@webpractic.ru</a>
         </div>
         <div class="footer-item">
             <center>
-                Политика отношений в обработки<br>персональных данных
+                <a href="/WebpractikPolicy.pdf">
+                    Политика отношений в обработки<br>персональных данных
+                </a>
             </center>
         </div>
     </div>
