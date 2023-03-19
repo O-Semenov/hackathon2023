@@ -9,8 +9,10 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
+    public const PUBLIC_SIZE = 20;
+
     public function adminPage(Request $request){
-        if (Auth::user()->role != 0 && Auth::user()->role != 1){
+        if (Auth::user()->role != 0){
             return redirect(route('index'));
         }
 
@@ -28,7 +30,7 @@ class AdminController extends Controller
 
         $user = User::where('id', $user_id)->first();
 
-        if (Auth::user()->role > $user->role){
+        if (Auth::user()->role >= $user->role && Auth::user()->id != $user->id){
             return redirect(route('bad_role'));
         }
 
@@ -47,26 +49,26 @@ class AdminController extends Controller
 
         $user = User::where('id', '=', $user_id)->first();
 
-        $params = $request->all();
-
-
-        /*
-        $validateFields = $request->validate([
-            'surname' => 'required',
-            'name' => 'required',
-            'patronymic' => 'required',
-            'email' => 'required|email',
-            'department_id' => 'required',
-            'role' => 'required',
-            //'img' => 'required',
-        ]);
-        */
-
-
-
-
         if (Auth::user()->role > $user->role){
             return redirect(route('bad_role'));
+        }
+
+        $params = $request->all();
+
+        $path = null;
+        if($params['image']){
+            $filenameWithExt = $request->file('image')->getClientOriginalName();
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            $extention = $request->file('image')->getClientOriginalExtension();
+            $fileNameToStore = "avatars/".$filename."_".time().".".$extention;
+            $path = mb_substr(
+                $request->file('image')->storeAs('public', $fileNameToStore),
+                self::PUBLIC_SIZE
+            );
+
+            $user->update([
+                'img' => $fileNameToStore
+            ]);
         }
 
 
