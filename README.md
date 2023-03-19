@@ -21,7 +21,9 @@
 <a href="http://crosola.ru">Тут</a>
 
 ## Доступы
-- 
+- Администратор log: test@test.ru pas: 12345
+- Уровень 1 log: test2@test.ru pas: 12345
+- Уровень 2 log: test3@test.ru pas: 12345
 
 
 ## Скрины
