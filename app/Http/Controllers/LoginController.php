@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
-    public const PUBLIC_SIZE = 7;
+    public const PUBLIC_SIZE = 20;
 
     public function login(Request $request){
         $formField = $request->only(['email', 'password']);

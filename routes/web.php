@@ -29,10 +29,11 @@ Route::get('/admin', [\App\Http\Controllers\AdminController::class, 'adminPage']
 Route::post('/register', [\App\Http\Controllers\LoginController::class, 'register'])->name('register');
 
 // Информация о пользователе
-Route::get('/user/{id}', [\App\Http\Controllers\AdminController::class, 'userEdit'])->name('admin');
+Route::get('/user/{user_id}', [\App\Http\Controllers\UserController::class, 'userPageReadOnly'])->name('admin');
+Route::get('/user/edit/{id}', [\App\Http\Controllers\AdminController::class, 'userEdit'])->name('admin');
 
 // Редактирование пользователя
-Route::get('/user_edit/{id}', [\App\Http\Controllers\AdminController::class, 'userEditSave'])->name('user_edit');
+Route::post('/user_edit/{id}', [\App\Http\Controllers\AdminController::class, 'userEditSave'])->name('user_edit');
 /*-----------------------------*/
 
 /*----------- Results -----------*/
