@@ -15,6 +15,11 @@ $auth = \Illuminate\Support\Facades\Auth::check();
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Сообщения</title>
 
+    <script
+        src="https://code.jquery.com/jquery-3.6.4.slim.js"
+        integrity="sha256-dWvV84T6BhzO4vG6gWhsWVKVoa4lVmLnpBOZh/CAHU4="
+        crossorigin="anonymous"></script>
+
     <link rel="stylesheet" type="text/css" href="{{ asset('css/messanger/messanger.css') }}">
 </head>
 <body>
@@ -75,10 +80,42 @@ $auth = \Illuminate\Support\Facades\Auth::check();
             </div>
             </div>
             <div class="chat-area-main" id="message-box">
+
                 @foreach($messages as $message)
                     <div class="chat-msg @if($message->user_id == $user->id) owner @endif">
                         <div class="chat-msg-content">
-                            <div class="chat-msg-text">{{ $message->message }}</div>
+                            <div class="chat-msg-text">
+                                {{ $message->message }}
+
+                                @if($message->uri != null)
+                                    <br>
+                                    @if($message->type == 1)
+                                        <img src="{{asset('storage'). '/' . $message->uri}}" />
+                                    @else
+                                        <a href="{{asset('storage'). '/' . $message->uri}}">
+                                            <img src="{{asset('img/file.png') }}" />
+                                            <br><br>
+                                            <center>
+                                                <?php
+                                                    $exployd = explode('/', $message->uri)[1];
+                                                    $exployd = explode('_', $exployd);
+                                                    $format = explode('.', end($exployd))[1];
+                                                    $name = '';
+                                                    for ($i=0; $i<count($exployd) - 1; $i++){
+                                                        $name .= $exployd[$i];
+                                                        if ($i > 0){
+                                                            $name .= '_';
+                                                        }
+                                                    }
+                                                    $name .= '.' . $format;
+                                                ?>
+                                                {{ $name }}
+                                            </center>
+                                        </a>
+                                    @endif
+                                @endif
+                            </div>
+
                         </div>
                     </div>
                 @endforeach
@@ -86,14 +123,33 @@ $auth = \Illuminate\Support\Facades\Auth::check();
             </div>
             <div class="chat-area-footer">
 
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-paperclip">
-                    <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48" /></svg>
-                <input type="text" id="message" onended="sendMessage()" placeholder="Сообщение..." />
+                <form class="chat-area-footer" method="POST" autocomplete="off" action="/api/send-message/{{ $chat_id }}" enctype="multipart/form-data">
+                    @csrf
+
+                    @if($user->role <= $user_selected->role)
+                <label class="input-file">
+                    <input name="file" type="file" class="file-select" id="file-select">
+                    <span class="input-file-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-paperclip">
+     <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48" /></svg>
+                    </span>
+                    <span class="input-file-text"></span>
+                </label>
+
+                    @endif
+
+                <input onpaste="pasteLink(event)" type="text" id="message" name="message" placeholder="Сообщение..." />
 
 
-                <svg onclick="sendMessage()" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
-                    <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z"/>
-                </svg>
+
+                    <button type="submit" class="send-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
+                            <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z"/>
+                        </svg>
+                    </button>
+
+
+                </form>
 
             </div>
         </div>
@@ -108,6 +164,15 @@ $auth = \Illuminate\Support\Facades\Auth::check();
 
 <script>
     let user_id = {{ $user->id }}
+
+    $('.input-file input[type=file]').on('change', function(){
+        let file = this.files[0];
+        $(this).closest('.input-file').find('.input-file-text').html(file.name);
+    });
+
+    function pasteLink(event){
+        alert(event.target.value)
+    }
 </script>
 
 
@@ -118,29 +183,25 @@ $auth = \Illuminate\Support\Facades\Auth::check();
 
 <script>
 
-    async function postData(message) {
-        const xhr = new XMLHttpRequest();
-        var params = 'message=' + message
-        xhr.open('GET', '/api/send-message/{{ $chat_id }}?' + params);
-        //xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
-        xhr.onreadystatechange = function() {
-            if (this.readyState !== 4) return;
-            console.log(xhr.responseText)
-        }
-        xhr.send();
+    function postData(url, message) {
+        var data = new FormData();
+        data.append('message', message);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', url, true);
+        xhr.onload = function () {
+            // do something to response
+            console.log(this.responseText);
+        };
+        xhr.send(data);
     }
 
 
     let message = document.getElementById('message')
 
-    message.addEventListener("keypress", function(event) {
-        if (event.key === "Enter") {
-            sendMessage()
-        }
-    })
-
-    async function sendMessage() {
-        await postData(message.value);
+    function sendMessage() {
+        let url = '/api/send-message/{{ $chat_id }}'
+        postData(url, message.value);
         message.value = ''
     }
 
@@ -165,12 +226,45 @@ $auth = \Illuminate\Support\Facades\Auth::check();
     }
 
     function addMessageItem(message){
-        messagesBox.innerHTML += '<div class="chat-msg ' + ( message['user_id'] === user_id ? 'owner' : '' ) +'"> <div class="chat-msg-content"> <div class="chat-msg-text">' + message['message'] + '</div> </div> </div>'
+
+        let messageItem = '<div class="chat-msg ' + ( message['user_id'] === user_id ? 'owner' : '' ) +'">'
+        +'<div class="chat-msg-content">'
+            +'<div class="chat-msg-text">'
+            + message['message']
+
+                +''
+            +'<br>'
+            +''
+            +'<img src="" />'
+            +''
+            +'<a href="">'
+            +'<img src="" />'
+            +'</a>'
+        +''
+        +''
+
+        if (message['uri'] !== null){
+            //messageItem += '<br>'
+            if (message['type'] == 1){
+                messageItem += '<img src="/storage/' + message['uri'] + '" />'
+            }else{
+                messageItem += '<a href="/storage/' + message['uri'] + '">'
+                    +'<img src="/img/file.png" />'
+                    +'</a>'
+            }
+        }
+
+        messageItem += '</div>' + '</div>' + '</div>'
+
+        messagesBox.innerHTML += messageItem;
+        //messagesBox.innerHTML += '<div class="chat-msg ' + ( message['user_id'] === user_id ? 'owner' : '' ) +'"> <div class="chat-msg-content"> <div class="chat-msg-text">' + message['message'] + '</div> </div> </div>'
     }
 
     function getNewMessages(){
         let url = '/api/get-new-chat-messages/{{ $chat_id }}'
         let messages = JSON.parse(httpGet(url))
+        //let messages = httpGet(url)
+        //console.log(messages)
         for (let i=0; i<messages.length; i++){
             addMessageItem(messages[i])
         }

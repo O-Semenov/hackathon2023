@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\DB;
 class MessangerController extends Controller
 {
 
+    public const PUBLIC_SIZE = 20;
+
     /*---------------------- Functions ----------------------*/
 
     public function createDialog($user_id){
@@ -58,28 +60,69 @@ class MessangerController extends Controller
     }
 
     public function sendMessage(Request $request, $chat_id){
-        $validateFields = $request->validate([
-            'message' => 'required',
-        ]);
 
-        DB::table('messages')->insert([
-            ['chat_id' => $chat_id, 'user_id' => Auth::user()->id, 'message' => $validateFields['message']],
-        ]);
+        $params = $request->all();
 
-        //dd($validateFields);
+        $message = '';
+        if ($params['message']){
+            $message = $params['message'];
+        }
+
+
+        $message_id = DB::table('messages')->insertGetId(
+            ['chat_id' => $chat_id, 'user_id' => Auth::user()->id, 'message' => $message],
+        );
+
+        if($request->hasFile('file')){
+            $filenameWithExt = $request->file('file')->getClientOriginalName();
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            $extention = $request->file('file')->getClientOriginalExtension();
+            $fileNameToStore = "files/".$filename."_".time().".".$extention;
+            $path = mb_substr(
+                $request->file('file')->storeAs('public', $fileNameToStore),
+                self::PUBLIC_SIZE
+            );
+
+            $expod = explode('.', $fileNameToStore);
+            $type = end($expod);
+
+            $type_db = 0;
+            if ($type == 'jpg' || $type == 'png' || $type == 'bmp'){
+                $type_db = 1;
+            }
+
+            DB::table('files')->insert([
+                [
+                    'uri' => $fileNameToStore,
+                    'type' => $type_db,
+                    'message_id' => $message_id,
+                    'chat_id' => $chat_id
+                ]
+            ]);
+        }
+
+        return redirect(url()->previous());
         return 'send message: ' . $chat_id . ' - ' . $validateFields['message'];
     }
 
     public function getNewChatMessages($chat_id){
+        if (!Auth::check()){
+            return redirect(route('login'));
+        }
+
         $lastTime = DB::table('chats_users')->where([
             ['chat_id', '=', $chat_id],
             ['user_id', '=', Auth::user()->id]
         ])->first()->last_time;
 
-        $newMessages = DB::table('messages')->where([
-            ['chat_id', '=', $chat_id],
-            ['date', '>', $lastTime]
-        ])->get();
+        $newMessages = DB::table('messages')
+            ->leftJoin('files', 'messages.id', '=', 'files.message_id')
+            ->where([
+                ['messages.chat_id', '=', $chat_id],
+                ['date', '>', $lastTime]
+            ])
+            ->orderBy('messages.id', 'asc')
+            ->get();
 
         if ($newMessages->count() > 0){
             $lastTime = $newMessages[$newMessages->count() - 1]->date;
@@ -117,7 +160,11 @@ class MessangerController extends Controller
 
     public function userChat(Request $request, $chat_id){
 
-        $messages = DB::table('messages')->where('chat_id', $chat_id)->get();
+        $messages = DB::table('messages')
+            ->leftJoin('files', 'messages.id', '=', 'files.message_id')
+            ->where('messages.chat_id', $chat_id)
+            ->orderBy('messages.id', 'asc')
+            ->get();
 
         $user_id = DB::table('chats_users')->where([
             ['chat_id', '=', $chat_id],

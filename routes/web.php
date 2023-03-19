@@ -72,7 +72,7 @@ Route::get('/messanger', [\App\Http\Controllers\MessangerController::class, 'ind
 Route::get('/messanger/user/{user_id}', [\App\Http\Controllers\MessangerController::class, 'userCreateChat'])->name('messanger');
 Route::get('/messanger/chat/{chat_id}', [\App\Http\Controllers\MessangerController::class, 'userChat'])->name('messanger');
 
-Route::get('/api/send-message/{user_id}', [\App\Http\Controllers\MessangerController::class, 'sendMessage'])->name('messanger');
+Route::post('/api/send-message/{user_id}', [\App\Http\Controllers\MessangerController::class, 'sendMessage'])->name('messanger');
 
 Route::get('/api/get-new-chat-messages/{user_id}', [\App\Http\Controllers\MessangerController::class, 'getNewChatMessages'])->name('messanger');
 
