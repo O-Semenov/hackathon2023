@@ -14,24 +14,33 @@ $auth = \Illuminate\Support\Facades\Auth::check();
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Main</title>
     <script src="{{ asset("js/app.js") }}"></script>
-    <script src="{{ asset("js/bootstrap.js") }}"></script>
     <link rel="stylesheet" class="cp-pen-styles" href="{{ asset("css/app.css") }}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css'>
     <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.2/css/font-awesome.min.css'>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style>
+        .wave {
+            position: absolute;
+            top: -100px;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url({{asset("wave.png")}});
+            background-size: 1000px 100px;
+        }
+    </style>
 </head>
 <body>
-@if($auth)
-
 <header>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             @if ($user->role == 0 || $user->role == 1)
                 <a class="navbar-brand" href="/admin">Админка</a>
             @endif
-                <a class="navbar-brand" href="/messanger">Сообщения</a>
+            <a class="navbar-brand" href="/messanger">Сообщения</a>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 </ul>
@@ -40,268 +49,100 @@ $auth = \Illuminate\Support\Facades\Auth::check();
         </div>
     </nav>
 </header>
-
-<div class="container">
-<div id="frame" class="row">
-    <div id="sidepanel" class="col">
-        <div id="profile" class="">
-            <div class="wrap">
-                <img id="profile-img" src="
-                @if (isset($user->img))
-                    {{asset('storage'). '/' . $user->img}}
-                @else
-                https://media.istockphoto.com/id/1214284142/ru/%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F/%D0%B0%D0%BD%D0%BE%D0%BD%D0%B8%D0%BC%D0%BD%D1%8B%D0%B9-%D0%B6%D0%B5%D0%BD%D1%81%D0%BA%D0%B8%D0%B9-%D0%B0%D0%B2%D0%B0%D1%82%D0%B0%D1%80-%D0%BB%D0%B8%D1%86%D0%B0-%D0%B8%D0%BD%D0%BA%D0%BE%D0%B3%D0%BD%D0%B8%D1%82%D0%BE-%D0%B6%D0%B5%D0%BD%D1%89%D0%B8%D0%BD%D0%B0-%D0%B3%D0%BE%D0%BB%D0%BE%D0%B2%D1%83-%D1%81%D0%B8%D0%BB%D1%83%D1%8D%D1%82.jpg?s=170667a&w=0&k=20&c=izcqDj8AJy7eeYGQtdjGuEDp8Chu651tSBKFWbpwPRk=
-                @endif
-                " class="online" alt="" />
-                <p>{{ $user->surname }} {{ mb_substr($user->name, 0, 1) }}. {{ mb_substr($user->patronymic, 0, 1) }}.</p>
-                <i class="fa fa-chevron-down expand-button" aria-hidden="true"></i>
-                <div id="status-options">
-                    <ul>
-                        <li id="status-online" class="active"><span class="status-circle"></span> <p>Online</p></li>
-                        <li id="status-away"><span class="status-circle"></span> <p>Away</p></li>
-                        <li id="status-busy"><span class="status-circle"></span> <p>Busy</p></li>
-                        <li id="status-offline"><span class="status-circle"></span> <p>Offline</p></li>
-                    </ul>
-                </div>
-                <div id="expanded">
-                    <label for="twitter"><i class="" aria-hidden="true">
-                            @if ($user->role == 0)
-                                Администратор
-                            @elseif ($user->role == 1)
-                                Директор
-                            @elseif ($user->role == 2)
-                                Сотрудник
-                            @endif
-                        </i></label>
-                    <label for="twitter"><i class="" aria-hidden="true"> Отдел: {{ $department->name }}</i></label>
-                </div>
-            </div>
-        </div>
-        <div id="search">
-            <label for=""><i class="fa fa-search" aria-hidden="true"></i></label>
-            <input type="text" placeholder="Search contacts..." />
-        </div>
-        <div id="contacts">
-            <ul>
-                <li class="contact">
-                    <div class="wrap">
-                        <span class="contact-status online"></span>
-                        <img src="http://emilcarlsson.se/assets/louislitt.png" alt="" />
-                        <div class="meta">
-                            <p class="name">Louis Litt</p>
-                            <p class="preview">You just got LITT up, Mike.</p>
-                        </div>
-                    </div>
-                </li>
-                <li class="contact active">
-                    <div class="wrap">
-                        <span class="contact-status busy"></span>
-                        <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
-                        <div class="meta">
-                            <p class="name">Harvey Specter</p>
-                            <p class="preview">Wrong. You take the gun, or you pull out a bigger one. Or, you call their bluff. Or, you do any one of a hundred and forty six other things.</p>
-                        </div>
-                    </div>
-                </li>
-                <li class="contact">
-                    <div class="wrap">
-                        <span class="contact-status away"></span>
-                        <img src="http://emilcarlsson.se/assets/rachelzane.png" alt="" />
-                        <div class="meta">
-                            <p class="name">Rachel Zane</p>
-                            <p class="preview">I was thinking that we could have chicken tonight, sounds good?</p>
-                        </div>
-                    </div>
-                </li>
-                <li class="contact">
-                    <div class="wrap">
-                        <span class="contact-status online"></span>
-                        <img src="http://emilcarlsson.se/assets/donnapaulsen.png" alt="" />
-                        <div class="meta">
-                            <p class="name">Donna Paulsen</p>
-                            <p class="preview">Mike, I know everything! I'm Donna..</p>
-                        </div>
-                    </div>
-                </li>
-                <li class="contact">
-                    <div class="wrap">
-                        <span class="contact-status busy"></span>
-                        <img src="http://emilcarlsson.se/assets/jessicapearson.png" alt="" />
-                        <div class="meta">
-                            <p class="name">Jessica Pearson</p>
-                            <p class="preview">Have you finished the draft on the Hinsenburg deal?</p>
-                        </div>
-                    </div>
-                </li>
-                <li class="contact">
-                    <div class="wrap">
-                        <span class="contact-status"></span>
-                        <img src="http://emilcarlsson.se/assets/haroldgunderson.png" alt="" />
-                        <div class="meta">
-                            <p class="name">Harold Gunderson</p>
-                            <p class="preview">Thanks Mike! :)</p>
-                        </div>
-                    </div>
-                </li>
-                <li class="contact">
-                    <div class="wrap">
-                        <span class="contact-status"></span>
-                        <img src="http://emilcarlsson.se/assets/danielhardman.png" alt="" />
-                        <div class="meta">
-                            <p class="name">Daniel Hardman</p>
-                            <p class="preview">We'll meet again, Mike. Tell Jessica I said 'Hi'.</p>
-                        </div>
-                    </div>
-                </li>
-                <li class="contact">
-                    <div class="wrap">
-                        <span class="contact-status busy"></span>
-                        <img src="http://emilcarlsson.se/assets/katrinabennett.png" alt="" />
-                        <div class="meta">
-                            <p class="name">Katrina Bennett</p>
-                            <p class="preview">I've sent you the files for the Garrett trial.</p>
-                        </div>
-                    </div>
-                </li>
-                <li class="contact">
-                    <div class="wrap">
-                        <span class="contact-status"></span>
-                        <img src="http://emilcarlsson.se/assets/charlesforstman.png" alt="" />
-                        <div class="meta">
-                            <p class="name">Charles Forstman</p>
-                            <p class="preview">Mike, this isn't over.</p>
-                        </div>
-                    </div>
-                </li>
-                <li class="contact">
-                    <div class="wrap">
-                        <span class="contact-status"></span>
-                        <img src="http://emilcarlsson.se/assets/jonathansidwell.png" alt="" />
-                        <div class="meta">
-                            <p class="name">Jonathan Sidwell</p>
-                            <p class="preview"><span>You:</span> That's bullshit. This deal is solid.</p>
-                        </div>
-                    </div>
-                </li>
-            </ul>
-        </div>
-    </div>
-    <div class="content">
-        <div class="contact-profile">
-            <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
-            <p>Harvey Specter</p>
-        </div>
-        <div class="messages">
-            <ul>
-                <li class="sent">
-                    <img src="http://emilcarlsson.se/assets/mikeross.png" alt="" />
-                    <p>How the hell am I supposed to get a jury to believe you when I am not even sure that I do?!</p>
-                </li>
-                <li class="replies">
-                    <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
-                    <p>When you're backed against the wall, break the god damn thing down.</p>
-                </li>
-                <li class="replies">
-                    <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
-                    <p>Excuses don't win championships.</p>
-                </li>
-                <li class="sent">
-                    <img src="http://emilcarlsson.se/assets/mikeross.png" alt="" />
-                    <p>Oh yeah, did Michael Jordan tell you that?</p>
-                </li>
-                <li class="replies">
-                    <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
-                    <p>No, I told him that.</p>
-                </li>
-                <li class="replies">
-                    <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
-                    <p>What are your choices when someone puts a gun to your head?</p>
-                </li>
-                <li class="sent">
-                    <img src="http://emilcarlsson.se/assets/mikeross.png" alt="" />
-                    <p>What are you talking about? You do what they say or they shoot you.</p>
-                </li>
-                <li class="replies">
-                    <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
-                    <p>Wrong. You take the gun, or you pull out a bigger one. Or, you call their bluff. Or, you do any one of a hundred and forty six other things.</p>
-                </li>
-            </ul>
-        </div>
-        <div class="message-input">
-            <div class="wrap">
-                <input type="text" placeholder="Write your message..." />
-                <i class="fa fa-paperclip attachment" aria-hidden="true"></i>
-                <button class="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
-            </div>
-        </div>
-    </div>
-</div>
-</div>
-@endif
-<script src='//production-assets.codepen.io/assets/common/stopExecutionOnTimeout-b2a7b3fe212eaa732349046d8416e00a9dec26eb7fd347590fbced3ab38af52e.js'></script><script src='https://code.jquery.com/jquery-2.2.4.min.js'></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-<script >$(".messages").animate({ scrollTop: $(document).height() }, "fast");
-
-    $("#profile-img").click(function() {
-        $("#status-options").toggleClass("active");
-    });
-
-    $(".expand-button").click(function() {
-        $("#profile").toggleClass("expanded");
-        $("#contacts").toggleClass("expanded");
-    });
-
-    $("#status-options ul li").click(function() {
-        $("#profile-img").removeClass();
-        $("#status-online").removeClass("active");
-        $("#status-away").removeClass("active");
-        $("#status-busy").removeClass("active");
-        $("#status-offline").removeClass("active");
-        $(this).addClass("active");
-
-        if($("#status-online").hasClass("active")) {
-            $("#profile-img").addClass("online");
-        } else if ($("#status-away").hasClass("active")) {
-            $("#profile-img").addClass("away");
-        } else if ($("#status-busy").hasClass("active")) {
-            $("#profile-img").addClass("busy");
-        } else if ($("#status-offline").hasClass("active")) {
-            $("#profile-img").addClass("offline");
-        } else {
-            $("#profile-img").removeClass();
-        };
-
-        $("#status-options").removeClass("active");
-    });
-
-    function newMessage() {
-        message = $(".message-input input").val();
-        if($.trim(message) == '') {
-            return false;
-        }
-        $('<li class="sent"><img src="http://emilcarlsson.se/assets/mikeross.png" alt="" /><p>' + message + '</p></li>').appendTo($('.messages ul'));
-        $('.message-input input').val(null);
-        $('.contact.active .preview').html('<span>You: </span>' + message);
-        $(".messages").animate({ scrollTop: $(document).height() }, "fast");
-    };
-
-    $('.submit').click(function() {
-        newMessage();
-    });
-
-    $(window).on('keydown', function(e) {
-        if (e.which == 13) {
-            newMessage();
-            return false;
-        }
-    });
-
-</script>
-</body>
-<footer class="footer mt-auto py-3 bg-light">
+@if($auth)
     <div class="container">
-        <span class="text-muted">Place sticky footer content here.</span>
+        <div class="row gy-5">
+            <div class="col-xs">
+            </div>
+            <div class="col-md">
+                <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active" data-bs-interval="2000">
+                            <img src="https://klike.net/uploads/posts/2020-04/1586162565_2.jpg" class="d-block w-100 h-100" alt="...">
+                        </div>
+                        <div class="carousel-item" data-bs-interval="2000">
+                            <img src="https://klike.net/uploads/posts/2020-04/1586162565_2.jpg" class="d-block w-100 h-100" alt="...">
+                        </div>
+                        <div class="carousel-item">
+                            <img src="https://kartinkof.club/uploads/posts/2022-10/1665677079_25-kartinkof-club-p-kartinka-noch-dlya-detei-25.jpg" class="d-block w-100 h-100" alt="...">
+
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval"  data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Предыдущий</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval"  data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Следующий</span>
+                    </button>
+                </div>
+            </div>
+            <div class="col-xs">
+            </div>
+            <div class="container px-4 overflow-hidden" style="padding-bottom: 150px">
+                <div class="row gx-3 gy-5">
+                    <div class="col">
+                        <div class="p-3 round hover-effect">
+                            <a class="btn btn-outline-light" data-bs-toggle="collapse" href="#firstNews" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                <img src="https://images.unsplash.com/photo-1569025690938-a00729c9e1f9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80" class="img-thumbnail" alt="...">
+                                Новости в офисе
+                            </a>
+                        </div>
+                        <div class="collapse round" id="firstNews">
+                            <div class="card card-body">
+                                Наша экосистема финтех-продуктов построена вокруг нашего решения для моста ликвидности — Trade Processor.
+
+                                Он интегрирован с программным обеспечением для мониторинга данных (BBI), решением для управления капиталом (PAMM) и дополнительными инструментами, которые вместе обеспечивают комплексную платформу аналитики для брокеров любого размера. Все наши продукты полностью совместимы и требуют минимальной настройки, что экономит время и деньги брокеров.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="p-3 round hover-effect">
+                            <a class="btn btn-outline-light" data-bs-toggle="collapse" href="#secondNews" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                <img src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80" class="img-thumbnail" alt="...">
+                                Интересное
+                            </a>
+                        </div>
+                        <div class="collapse round" id="secondNews">
+                            <div class="card card-body">
+                                SEO — один из самых эффективных способов увеличения посещаемости веб-сайта, и с помощью наших услуг вы можете использовать SEO не только для увеличения трафика, но и для получения дохода.
+
+                                С коэффициентом удержания клиентов 91%, а также оценкой рекомендаций клиентов, которая превышает средний показатель по отрасли на 254%, мы являемся надежным Digital-агентством электронной коммерции для бизнеса.    </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="p-3 round hover-effect">
+                            <a class="btn btn-outline-light" data-bs-toggle="collapse" href="#thirdNews" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                <img src="https://plus.unsplash.com/premium_photo-1668473367234-fe8a1decd456?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1932&q=80" class="img-thumbnail" alt="...">
+                                Очень интересное
+                            </a>
+                        </div>
+                        <div class="collapse round" id="thirdNews">
+                            <div class="card card-body">
+                                Каждый проект в студии мы начинаем с внимательного изучения рынка и аудитории, проводим аудит конкурирующих проектов. Создание мобильных приложений и сайтов как инструмент, который приносит бизнесу измеримую пользу. Мы используем наш уникальный опыт и знания, чтобы создавать интересные и качественные продукты. Мы берем на себя полный цикл создания мобильных приложений и сайтов, от проектирования интерфейсов до разработки серверной части.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</footer>
+@endif
+
+    <footer class="footer">
+        <div class="waves">
+            <div class="wave" id="wave1"></div>
+            <div class="wave" id="wave2"></div>
+            <div class="wave" id="wave3"></div>
+            <div class="wave" id="wave4"></div>
+        </div>
+
+        <p>© 2023 | Твой кролик написал</p>
+    </footer>
+
+</body>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </html>
 

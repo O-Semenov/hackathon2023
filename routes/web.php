@@ -79,5 +79,5 @@ Route::get('/', [\App\Http\Controllers\UserController::class, 'userPage'])->name
 
 
 Route::get('/test', function () {
-    return 'test';
+    return view('profile');
 })->name('test');
